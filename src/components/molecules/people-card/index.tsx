@@ -5,16 +5,22 @@ import { useFilmListContext } from '../../../context/filmList'
 import { ParamType } from '../../../models/param'
 import { People } from '../../../models/people'
 import Pagination from '../pagination'
+import StarshipModal from '../starship-modal'
 import './styles.scss'
 
 interface PeopleDetailProps {
-    label: string,
+    label: string
     content: string | undefined
 }
 
 interface IterablePeopleDetail {
-    label: string,
+    label: string
     field: string | undefined
+}
+
+interface ModalState {
+    show: boolean
+    url: string
 }
 
 function getIterablePeopleDetail(people: Partial<People>): IterablePeopleDetail[] {
@@ -71,6 +77,7 @@ export default function PeopleCard() {
     const source = useRef<CancelTokenSource | null>(null)
     const prevPIndex = useRef<number>(parseInt(param.peopleIndex || '0'))
     const [loading, setLoading] = useState<boolean>(true)
+    const [modal, setModal] = useState<ModalState>({ show: false, url: '' })
 
     useEffect(() => {
         if (parseInt(param.peopleIndex) !== prevPIndex.current) {
@@ -138,6 +145,10 @@ export default function PeopleCard() {
                                     <button
                                         key={i}
                                         className="peopleCard__starship__button"
+                                        onClick={() => setModal({
+                                            show: true,
+                                            url: ship
+                                        })}
                                     >
                                         Starship {i + 1}
                                     </button>
@@ -150,6 +161,12 @@ export default function PeopleCard() {
             </div>
             
             { people && <Pagination /> }
+            { modal.show && 
+                <StarshipModal
+                    onClose={() => setModal({show: false, url: ''})}
+                    url={modal.url}
+                />
+            }
         </Fragment>
     )
 }
