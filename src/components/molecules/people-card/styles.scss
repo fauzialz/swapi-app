@@ -110,6 +110,10 @@
     display: grid;
     grid-template-columns: 160px 1fr;
     margin-bottom: 10px;
+
+    &__label {
+        color: #767676;
+    }
     
     &__content {
         width: 100%;

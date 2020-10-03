@@ -1,6 +1,6 @@
 import Axios, { CancelTokenSource } from 'axios'
 import React, { Fragment, useContext, useEffect, useRef, useState } from 'react'
-import { Route, Switch, useParams } from 'react-router-dom'
+import { useParams } from 'react-router-dom'
 import { useFilmListContext } from '../../../context/filmList'
 import { ParamType } from '../../../models/param'
 import { People } from '../../../models/people'
@@ -64,7 +64,7 @@ function PeopleDetail({ label, content }: PeopleDetailProps ) {
     )
 }
 
-function PeopleCard() {
+export default function PeopleCard() {
     var param = useParams<ParamType>()
     const { filmList } = useContext(useFilmListContext)
     const [people, setPeople] = useState<Partial<People>>()
@@ -75,6 +75,8 @@ function PeopleCard() {
     useEffect(() => {
         if (parseInt(param.peopleIndex) !== prevPIndex.current) {
             prevPIndex.current = parseInt(param.peopleIndex)
+            setLoading(true)
+
             if (source.current) {
                 source.current.cancel('Change page...')
             }
@@ -85,8 +87,7 @@ function PeopleCard() {
     const fetchPeopleData = async () => {
         const url = filmList[parseInt(param.episodeIndex)]?.characters[parseInt(param.peopleIndex)] || ''
         if(url === '') return
-        setLoading(true)
-
+    
         try {
             source.current = Axios.CancelToken.source()
             const res = await Axios.get(url, {
@@ -150,13 +151,5 @@ function PeopleCard() {
             
             { people && <Pagination /> }
         </Fragment>
-    )
-}
-
-export default function PeopleSwitch() {
-    return (
-        <Switch>
-            <Route path="/:episodeIndex/:peopleIndex" children={<PeopleCard />} />
-        </Switch>
     )
 }
