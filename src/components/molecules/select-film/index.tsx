@@ -1,14 +1,16 @@
 import Axios, { CancelTokenSource } from 'axios'
 import React, { ChangeEvent, useContext, useEffect, useRef, useState } from 'react'
-import { useHistory } from 'react-router-dom'
+import { useHistory, useParams } from 'react-router-dom'
 import { ENDPOINT } from '../../../config/api'
 import { useFilmListContext } from '../../../context/filmList'
 import { Film } from '../../../models/film'
+import { ParamType } from '../../../models/param'
 import './styles.scss'
 
 export default function SelectFilm() {
     const source = useRef<CancelTokenSource | null>(null)
-    const [activeFilm, setActiveFilm] = useState<number>(0)
+    const param = useParams<ParamType>()
+    const [activeFilm, setActiveFilm] = useState<number>(param.episodeIndex? parseInt(param.episodeIndex): -1)
     const history = useHistory()
     const { filmList, setFilmList } = useContext(useFilmListContext)
 
@@ -38,25 +40,35 @@ export default function SelectFilm() {
     }
 
     const onChangeSelect = (e: ChangeEvent<HTMLSelectElement>) => {
-        history.push(`/${e.target.value}/0`)
+        if (parseInt(e.target.value) === -1) {
+            history.push(`/`)
+        } else {
+            history.push(`/${e.target.value}/0`)
+        }
         setActiveFilm(parseInt(e.target.value))
     }
 
     return (
         <div className="selectMovies">
-            {filmList.length > 0 &&
+            {filmList.length === 0?
+                <div className="selectMovies__skeleton" />:
+                
                 <select
+                    className="selectMovies__select"
                     name="selectFilm"
                     id="selectFilm"
                     value={activeFilm}
                     onChange={onChangeSelect}
                 >
+                    <option value={-1}>
+                        Select Film
+                    </option>
                     {filmList.map( film => (
                         <option
                             key={film.episode_id}
                             value={film.episode_id - 1}
                         >
-                            {film.title}
+                            Star Wars Episode {film.episode_id}: {film.title}
                         </option>
                     ))}
                 </select>

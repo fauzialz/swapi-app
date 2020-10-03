@@ -1,0 +1,11 @@
+.selectMovies {
+    margin-right: 20px;
+    &__select {
+        padding: 8px 3px;
+    }
+    &__skeleton {
+        height: 35px;
+        width: 306px;
+        background-color: #ebebeb;
+    }
+}
