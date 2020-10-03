@@ -42,6 +42,68 @@
             }
         }
     }
+
+    &__skeleton {
+        position: relative;
+        width: fit-content;
+        &__title, &__titleShip {
+            width: 200px;
+            height: 32px;
+            border-radius: 4px;
+            margin-bottom: 30px;
+            background-color: #ebebeb;
+        }
+        &__titleShip {
+            width: 90px;
+        }
+        &__detail {
+            margin-bottom: 40px;
+            &__grid {
+                display: grid;
+                grid-template-columns: 160px 1fr;
+                margin-bottom: 10px;
+                &__content, &__label {
+                    height: 21px;
+                    border-radius: 4px;
+                    background-color: #ebebeb;
+                }
+                &__label {
+                    width: 100px;
+                }
+                &__content {
+                    width: 200px;
+                }
+            }
+        }
+        &__ship {
+            height: 39px;
+            width: 116px;
+            border-radius: 6px;
+            background-color: #ebebeb;
+            margin-bottom: 20px;
+        }
+    }
+}
+
+#label {
+    &__0 { width: 50px;}
+    &__1 { width: 58px;}
+    &__2 { width: 44px;}
+    &__3 { width: 80px;}
+    &__4 { width: 75px;}
+    &__5 { width: 78px;}
+    &__6 { width: 60px;}
+    &__7 { width: 90px;}
+}
+#content {
+    &__0 { width: 130px;}
+    &__1 { width: 60px;}
+    &__2 { width: 44px;}
+    &__3 { width: 50px;}
+    &__4 { width: 50px;}
+    &__5 { width: 60px;}
+    &__6 { width: 40px;}
+    &__7 { width: 230px;}
 }
 
 .peopleDetail {
