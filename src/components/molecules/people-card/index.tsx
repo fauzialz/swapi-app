@@ -5,14 +5,17 @@ import { useFilmListContext } from '../../../context/filmList'
 import { Film } from '../../../models/film'
 import { ParamType } from '../../../models/param'
 import { People } from '../../../models/people'
+import { Starship } from '../../../models/starship'
+import FetchHomeworld from '../../atom/fetch-homeworld'
 import TwoColumns, { TwoColumnsProps } from '../../templates/two-columns'
 import Pagination from '../pagination'
+import StarshipButton from '../starship-button'
 import StarshipModal from '../starship-modal'
 import './styles.scss'
 
 interface ModalState {
     show: boolean
-    url: string
+    starshipData: Partial<Starship>
 }
 
 function getIterablePeopleDetail(people: Partial<People>): TwoColumnsProps[] {
@@ -25,12 +28,7 @@ function getIterablePeopleDetail(people: Partial<People>): TwoColumnsProps[] {
         { label: 'Eye Color', content: people.eye_color },
         { label: 'Birth Year', content: people.birth_year },
         { label: 'Gender', content: people.gender },
-        { 
-            label: 'Homeworld',
-            content: people.homeworld?.includes('http')?
-                'Loading...' : 
-                people.homeworld
-        },
+        { label: 'Homeworld', content: <FetchHomeworld url={people.homeworld} /> },
     ])
 }
 
@@ -56,7 +54,7 @@ export default function PeopleCard() {
     const { filmList } = useContext(useFilmListContext)
     const [people, setPeople] = useState<Partial<People>>()
     const [loading, setLoading] = useState<boolean>(true)
-    const [modal, setModal] = useState<ModalState>({ show: false, url: '' })
+    const [modal, setModal] = useState<ModalState>({ show: false, starshipData: {} })
     
     /* FETCH CENCELATION REF */
     const source = useRef<CancelTokenSource | null>(null)
@@ -66,6 +64,15 @@ export default function PeopleCard() {
     const prevPIndex = useRef<number>(parseInt(param.peopleIndex || '0'))
     const prevFilmList = useRef<Film[]>(filmList)
 
+    /* IF ANY FETCH STILL PROCEESSING, CANCEL ALL FETCH */
+    const cancelAllFetch = () => {
+        if (source.current) {
+            source.current.cancel('Suddenly change page or unmounted, prev fetch people canceled!')
+        }
+        if (sourceHomeworld.current) {
+            sourceHomeworld.current.cancel('Suddenly change page or unmounted, prev homeland data fetch canceled!')
+        }
+    }
 
     useEffect(() => {
 
@@ -74,13 +81,7 @@ export default function PeopleCard() {
             prevPIndex.current = parseInt(param.peopleIndex)
             setLoading(true)
 
-            /* IF ANY FETCH STILL PROCEESSING, CANCEL ALL FETCH */
-            if (source.current) {
-                source.current.cancel('Suddenly change page, prev fetch canceled!')
-            }
-            if (sourceHomeworld.current) {
-                sourceHomeworld.current.cancel('Suddenly change page, prev homeland data fetch canceled!')
-            }
+            cancelAllFetch()
         }
 
         /* IF THERE ALREADY filmList, NO NEED TO FETCH PEOPLE (PEOPE ALREADY FETCH ONCE) */
@@ -88,7 +89,12 @@ export default function PeopleCard() {
             return
         }
 
-        fetchPeopleData() // eslint-disable-next-line
+        fetchPeopleData()
+
+        return () => {
+            cancelAllFetch()
+        }
+        // eslint-disable-next-line
     }, [param, filmList]) // filmList need to be here for check on filmList refech on page reload
 
     /* FETCH PEOPLE DATA */
@@ -103,21 +109,6 @@ export default function PeopleCard() {
             })
             setPeople({...res.data})
             setLoading(false)
-
-            fetchHomeworld(res.data)
-        } catch (err) {
-            console.warn(err?.response?.message || err?.message || err)
-        }
-    }
-
-    /* FETCH HOMEWORLD DATA */
-    const fetchHomeworld = async (people: People) => {
-        try {
-            sourceHomeworld.current = Axios.CancelToken.source()
-            const res = await Axios.get(people.homeworld, {
-                cancelToken: sourceHomeworld.current.token
-            })
-            setPeople({...people, homeworld: res.data.name})
         } catch (err) {
             console.warn(err?.response?.message || err?.message || err)
         }
@@ -157,17 +148,15 @@ export default function PeopleCard() {
                                     No Starship
                                 </div> :
 
-                                people.starships?.map( (ship, i) => (
-                                    <button
-                                        key={i}
-                                        className="peopleCard__starship__button"
-                                        onClick={() => setModal({
+                                people.starships?.map( ship => (
+                                    <StarshipButton
+                                        key={ship}
+                                        url={ship}
+                                        onClick={(data: Starship) => setModal({
                                             show: true,
-                                            url: ship
+                                            starshipData: data
                                         })}
-                                    >
-                                        Starship {i + 1}
-                                    </button>
+                                    />
                                 ))
                             }
                         </div>
@@ -179,8 +168,8 @@ export default function PeopleCard() {
             { people && <Pagination /> }
             { modal.show && 
                 <StarshipModal
-                    onClose={() => setModal({show: false, url: ''})}
-                    url={modal.url}
+                    onClose={() => setModal({show: false, starshipData: {}})}
+                    starshipData={modal.starshipData}
                 />
             }
         </Fragment>

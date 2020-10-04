@@ -1,28 +1,13 @@
-import Axios, { CancelTokenSource } from 'axios'
-import React, { Fragment, useEffect, useRef, useState } from 'react'
+import React from 'react'
 import { Starship } from '../../../models/starship'
 import Modal from '../../templates/modal'
 import TwoColumns, { TwoColumnsProps } from '../../templates/two-columns'
 import './styles.scss'
 
 interface StarshipModalProps {
-    url: string
+    starshipData: Partial<Starship>
     onClose: any
 }
-
-const StarshipModalSkeleton = () => (
-    <div className="starshipModal__skeleton">
-        <div className="starshipModal__skeleton__title" />
-        <div className="starshipModal__skeleton__detail">
-            {[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11].map( item => (
-                <div key={item} className="starshipModal__skeleton__detail__grid">
-                    <div id={`Slabel__${item}`} className="starshipModal__skeleton__detail__grid__label" />
-                    <div id={`Scontent__${item}`} className="starshipModal__skeleton__detail__grid__content" />
-                </div>
-            ))}
-        </div>
-    </div>
-)
 
 function getIterableStarshipData(starship: Partial<Starship>): TwoColumnsProps[] {
     if (!starship) return []
@@ -42,66 +27,24 @@ function getIterableStarshipData(starship: Partial<Starship>): TwoColumnsProps[]
     ])
 }
 
-export default function StarshipModal({ url, onClose }: StarshipModalProps) {
-    const [loading, setLoading] = useState<boolean>(true)
-    const [starshipData, setStarshipData] = useState<Partial<Starship>>({})
-    const fetch = useRef<CancelTokenSource | null>(null)
-    
-    useEffect(() => {
-        if (url === '') return
-        fetchStarship()
-        
-        /* CANCEL FETCH DATA WHEN COMPONENT UNMOUNT */
-        return () => {
-            if(fetch.current) {
-                fetch.current.cancel('Suddenly close modal, fetching data canceled!')
-            }
-        }
-        // eslint-disable-next-line
-    }, [url])
-
-    /* FETCH STARSHIP DATA */
-    const fetchStarship = async () => {
-        !loading && setLoading(true)
-
-        try {
-            fetch.current = Axios.CancelToken.source()
-            const res = await Axios.get(url, {
-                cancelToken: fetch.current.token
-            })
-            setStarshipData({...res.data})
-            setLoading(false)
-        } catch (err) {
-            console.warn(err?.response?.message || err?.message || err)
-        }
-    }
-
+export default function StarshipModal({ starshipData, onClose }: StarshipModalProps) {
     return (
         <Modal
             onClose={onClose}
         >
             <div className="starshipModal">
-                    
-                {
-                    /* RENDER SKELETON ON LOADING */
-                    loading ?
-                    <StarshipModalSkeleton />:
-
-                    <Fragment>
-                        <h2 className="starshipModal__title">
-                            {starshipData.name}
-                        </h2>
-                        <div className="starshipModal__detail">
-                            {getIterableStarshipData(starshipData).map( starship => (
-                                <TwoColumns
-                                    key={starship.label}
-                                    leftWidth="230px"
-                                    {...starship}
-                                />
-                            ))}
-                        </div>
-                    </Fragment>
-                }
+                <h2 className="starshipModal__title">
+                    {starshipData.name}
+                </h2>
+                <div className="starshipModal__detail">
+                    {getIterableStarshipData(starshipData).map( starship => (
+                        <TwoColumns
+                            key={starship.label}
+                            leftWidth="230px"
+                            {...starship}
+                        />
+                    ))}
+                </div>
             </div>
         </Modal>
     )

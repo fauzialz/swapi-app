@@ -1,5 +1,5 @@
 .peopleCard {
-    margin-top: 50px;
+    margin-top: 35px;
     padding: 28px 40px;
     border-radius: 10px;
     background-color: white;
@@ -16,30 +16,17 @@
 
     &__starship {
         display: flex;
-        margin-bottom: 20px;
-
-        &__button, &__noship {
-            margin-right: 20px;
+        flex-wrap: wrap;
+        margin-bottom: 10px;
+            
+        &__noship {
             border-radius: 5px;
-            background-color: #fde000;
-            border: 1px solid #fde000;
-            padding: 10px 20px;
             font-size: 14px;
             font-weight: 600;
-            transition: all .3s ease;
-
-            &:hover {
-                box-shadow: -10px 10px 10px #d2d3d3, 10px -10px 20px #fff;
-            }
-        }
-
-        &__noship {
+            margin-bottom: 10px;
             background-color: white;
             border: 1px solid black;
             padding: 8.5px 20px;
-            &:hover {
-                box-shadow: none;
-            }
         }
     }
 

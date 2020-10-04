@@ -1,0 +1,15 @@
+.starshipButton {
+    margin-right: 20px;
+    border-radius: 5px;
+    background-color: #fde000;
+    border: 1px solid #fde000;
+    padding: 10px 20px;
+    font-size: 14px;
+    transition: all .3s ease;
+    flex-shrink: 0;
+    margin-bottom: 10px;
+
+    &:hover {
+        box-shadow: -10px 10px 10px #d2d3d3, 10px -10px 20px #fff;
+    }
+}
