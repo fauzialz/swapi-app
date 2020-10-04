@@ -72,7 +72,7 @@ export default function StarshipModal({ url, onClose }: StarshipModalProps) {
             setStarshipData({...res.data})
             setLoading(false)
         } catch (err) {
-            console.error(err?.response?.message || err?.message || err)
+            console.warn(err?.response?.message || err?.message || err)
         }
     }
 

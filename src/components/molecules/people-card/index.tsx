@@ -105,7 +105,7 @@ export default function PeopleCard() {
 
             fetchHomeworld(res.data)
         } catch (err) {
-            console.error(err?.response?.message || err?.message || err)
+            console.warn(err?.response?.message || err?.message || err)
         }
     }
 
@@ -118,7 +118,7 @@ export default function PeopleCard() {
             })
             setPeople({...people, homeworld: res.data.name})
         } catch (err) {
-            console.error(err?.response?.message || err?.message || err)
+            console.warn(err?.response?.message || err?.message || err)
         }
     }
 
