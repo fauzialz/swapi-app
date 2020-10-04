@@ -18,6 +18,7 @@ export default function Modal({ children, onClose }: ModalProps) {
                 onClick={e => e.stopPropagation()}
             >
                 <button
+                    aria-label="ModalCloseButton"
                     onClick={onClose}
                     className="modal__container__close"
                 >
