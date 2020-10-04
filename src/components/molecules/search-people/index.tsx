@@ -1,8 +1,8 @@
-import React, { ChangeEvent, KeyboardEvent, useContext, useState } from 'react'
+import React, { ChangeEvent, KeyboardEvent, useContext, useEffect, useRef, useState } from 'react'
 import cn from 'classnames'
 import './styles.scss'
 import { useFilmListContext } from '../../../context/filmList'
-import Axios from 'axios'
+import Axios, { CancelTokenSource } from 'axios'
 import { ENDPOINT } from '../../../config/api'
 import { People } from '../../../models/people'
 import { useHistory } from 'react-router-dom'
@@ -19,6 +19,14 @@ export default function SearchPeople() {
     
     const { filmList } = useContext(useFilmListContext)
     const history = useHistory()
+
+    const source = useRef<CancelTokenSource | null>(null)
+
+    useEffect(() => {
+        return () => {
+            if (source.current) source.current.cancel('Search people unmounted, fetch canceled.')
+        }
+    }, [])
  
     /* ON SEARCH TEXT CHANGE */
     const onChangeHandler = (e : ChangeEvent<HTMLInputElement>) => {
@@ -31,11 +39,14 @@ export default function SearchPeople() {
         }
     }
 
-    /* SEARCH PEOPLE TI SWAPI */
+    /* SEARCH PEOPLE IN SWAPI */
     const searchPeople = async (text: string) => {
         setLoading(true)
         try {
-            var res = await Axios.get(ENDPOINT.searchPeople(text))
+            source.current = Axios.CancelToken.source()
+            var res = await Axios.get(ENDPOINT.searchPeople(text), {
+                cancelToken: source.current.token
+            })
             setSearchResult([...res.data.results])
         } catch (err) {
             console.warn(err?.response?.message || err)
@@ -67,7 +78,6 @@ export default function SearchPeople() {
         setSearchText('')
         setSearchFocus(false)
         constructRoute(searchResult[i])
-        
     }
 
     /* ON KEY DOWN HANDLER, WHEN PRES ARROW DOWN<, ARROW UP, ENTER */
