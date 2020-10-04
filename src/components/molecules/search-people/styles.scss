@@ -1,5 +1,8 @@
 .searchPeople {
     width: 286px;
+    height: 35px;
+    margin-bottom: 15px;
+    flex-shrink: 0;
     position: relative;
 
     &__wrapper {

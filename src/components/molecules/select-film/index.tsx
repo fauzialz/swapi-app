@@ -60,6 +60,7 @@ export default function SelectFilm() {
                     className="selectMovies__select"
                     name="selectFilm"
                     id="selectFilm"
+                    aria-label="selectFilm"
                     value={activeFilm}
                     onChange={onChangeSelect}
                 >
