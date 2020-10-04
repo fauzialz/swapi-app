@@ -1,11 +1,11 @@
-import React from 'react'
+import React, { useContext } from 'react'
+import { useCurrentStarshipContext } from '../../../context/currentStarship'
 import { Starship } from '../../../models/starship'
 import Modal from '../../templates/modal'
 import TwoColumns, { TwoColumnsProps } from '../../templates/two-columns'
 import './styles.scss'
 
 interface StarshipModalProps {
-    starshipData: Partial<Starship>
     onClose: any
 }
 
@@ -27,17 +27,19 @@ function getIterableStarshipData(starship: Partial<Starship>): TwoColumnsProps[]
     ])
 }
 
-export default function StarshipModal({ starshipData, onClose }: StarshipModalProps) {
+export default function StarshipModal({ onClose }: StarshipModalProps) {
+    const { currentStarship } = useContext(useCurrentStarshipContext)
+
     return (
         <Modal
             onClose={onClose}
         >
             <div className="starshipModal">
                 <h2 className="starshipModal__title">
-                    {starshipData.name}
+                    {currentStarship.name}
                 </h2>
                 <div className="starshipModal__detail">
-                    {getIterableStarshipData(starshipData).map( starship => (
+                    {getIterableStarshipData(currentStarship).map( starship => (
                         <TwoColumns
                             key={starship.label}
                             leftWidth="230px"

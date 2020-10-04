@@ -1,22 +1,17 @@
 import Axios, { CancelTokenSource } from 'axios'
 import React, { Fragment, useContext, useEffect, useRef, useState } from 'react'
 import { useParams } from 'react-router-dom'
+import CurrentStarshipProvider from '../../../context/currentStarship'
 import { useFilmListContext } from '../../../context/filmList'
 import { Film } from '../../../models/film'
 import { ParamType } from '../../../models/param'
 import { People } from '../../../models/people'
-import { Starship } from '../../../models/starship'
-import FetchHomeworld from '../../atom/fetch-homeworld'
+import FetchHomeworld from '../../atoms/fetch-homeworld'
 import TwoColumns, { TwoColumnsProps } from '../../templates/two-columns'
 import Pagination from '../pagination'
 import StarshipButton from '../starship-button'
 import StarshipModal from '../starship-modal'
 import './styles.scss'
-
-interface ModalState {
-    show: boolean
-    starshipData: Partial<Starship>
-}
 
 function getIterablePeopleDetail(people: Partial<People>): TwoColumnsProps[] {
     if (!people) return []
@@ -54,11 +49,10 @@ export default function PeopleCard() {
     const { filmList } = useContext(useFilmListContext)
     const [people, setPeople] = useState<Partial<People>>()
     const [loading, setLoading] = useState<boolean>(true)
-    const [modal, setModal] = useState<ModalState>({ show: false, starshipData: {} })
+    const [showModal, setShowModal] = useState<boolean>(false)
     
     /* FETCH CENCELATION REF */
     const source = useRef<CancelTokenSource | null>(null)
-    const sourceHomeworld = useRef<CancelTokenSource | null>(null)
     
     /* PREV DATA REF */
     const prevPIndex = useRef<number>(parseInt(param.peopleIndex || '0'))
@@ -68,9 +62,6 @@ export default function PeopleCard() {
     const cancelAllFetch = () => {
         if (source.current) {
             source.current.cancel('Suddenly change page or unmounted, prev fetch people canceled!')
-        }
-        if (sourceHomeworld.current) {
-            sourceHomeworld.current.cancel('Suddenly change page or unmounted, prev homeland data fetch canceled!')
         }
     }
 
@@ -115,7 +106,7 @@ export default function PeopleCard() {
     }
 
     return (
-        <Fragment>
+        <CurrentStarshipProvider>
             <div className="peopleCard">
                 {loading?
                     <PeopleCardSkeleton />:
@@ -152,10 +143,7 @@ export default function PeopleCard() {
                                     <StarshipButton
                                         key={ship}
                                         url={ship}
-                                        onClick={(data: Starship) => setModal({
-                                            show: true,
-                                            starshipData: data
-                                        })}
+                                        onClick={() => setShowModal(true)}
                                     />
                                 ))
                             }
@@ -166,12 +154,11 @@ export default function PeopleCard() {
             </div>
             
             { people && <Pagination /> }
-            { modal.show && 
+            { showModal && 
                 <StarshipModal
-                    onClose={() => setModal({show: false, starshipData: {}})}
-                    starshipData={modal.starshipData}
+                    onClose={() => setShowModal(false)}
                 />
             }
-        </Fragment>
+        </CurrentStarshipProvider>
     )
 }

@@ -1,5 +1,6 @@
 import Axios from 'axios'
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
+import { useCurrentStarshipContext } from '../../../context/currentStarship'
 import { Starship } from '../../../models/starship'
 import './styles.scss'
 
@@ -10,6 +11,7 @@ interface StarshipButtonProps {
 
 export default function StarshipButton({ url, onClick }: StarshipButtonProps) {
     const [ starshipData, setStarshipData ] = useState<Partial<Starship>>({})
+    const { setCurrentStarship } = useContext(useCurrentStarshipContext)
 
     useEffect(() => {
         const source = Axios.CancelToken.source()
@@ -27,11 +29,16 @@ export default function StarshipButton({ url, onClick }: StarshipButtonProps) {
         }
     }, [url])
 
+    const onClickHandler = () => {
+        setCurrentStarship({...starshipData})
+        onClick()
+    }
+
     return (
         <button
             disabled={!starshipData}
             className="starshipButton"
-            onClick={() => onClick(starshipData)}
+            onClick={onClickHandler}
         >
             {starshipData.name || 'Loading...'}
         </button>
