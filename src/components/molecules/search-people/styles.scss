@@ -45,7 +45,7 @@
     padding: 12px 10px;
     text-align: left;
     font-size: 14px;
-    &:hover {
+    &:hover, &__focus {
         background-color: rgb(242, 242, 242);
     }
 

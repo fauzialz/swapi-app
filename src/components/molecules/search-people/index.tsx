@@ -1,4 +1,4 @@
-import React, { ChangeEvent, useContext, useState } from 'react'
+import React, { ChangeEvent, KeyboardEvent, useContext, useState } from 'react'
 import cn from 'classnames'
 import './styles.scss'
 import { useFilmListContext } from '../../../context/filmList'
@@ -13,37 +13,45 @@ export default function SearchPeople() {
     const [searchFocus, setSearchFocus] = useState<boolean>(false)
     const [searchResult, setSearchResult] = useState<People[]>([])
     const [loading, setLoading] = useState<boolean>(false)
-
+    
+    const [showSugestionFocus, setShowSugestionFocus] = useState<boolean>(false)
+    const [sugestionFocused, setSugestionFocused] = useState<number>(0)
+    
     const { filmList } = useContext(useFilmListContext)
     const history = useHistory()
-
+ 
+    /* ON SEARCH TEXT CHANGE */
     const onChangeHandler = (e : ChangeEvent<HTMLInputElement>) => {
         setSearchText(e.target.value)
         if (e.target.value.length > 0) {
             searchPeople(e.target.value)
+            !searchFocus && setSearchFocus(true)
         } else {
             setSearchResult([])
         }
     }
 
+    /* SEARCH PEOPLE TI SWAPI */
     const searchPeople = async (text: string) => {
         setLoading(true)
         try {
             var res = await Axios.get(ENDPOINT.searchPeople(text))
             setSearchResult([...res.data.results])
         } catch (err) {
-            console.error(err?.response?.message || err)
+            console.warn(err?.response?.message || err)
             setSearchResult([])
         } finally {
             setLoading(false)
         }
     }
 
+    /* ON SEARCH INPUT BLUR */
     const onBlurHandler = () => {
         if (searchOn) return
         setSearchFocus(false)
     }
 
+    /* CHANG WEB ROUTE ACCORDING TO PEOPLE DATA FROM SEARCH RESULT */
     const constructRoute = (people: People) => {
         const firstFilm = people.films[0]
         const filmIndex = filmList.findIndex(film => film.url === firstFilm)
@@ -52,10 +60,47 @@ export default function SearchPeople() {
         history.push(`/${filmIndex}/${peopleIndex}`)
     }
 
+    /* ON SUGSTION CLICKED */
     const onClickSugestion = (i: number) => {
         setSearchText('')
         setSearchFocus(false)
         constructRoute(searchResult[i])
+        
+    }
+
+    /* ON KEY DOWN HANDLER, WHEN PRES ARROW DOWN<, ARROW UP, ENTER */
+    const onKeyDownHandler = (e: KeyboardEvent<HTMLInputElement>) => {
+        if (searchResult.length === 0) return
+
+        if (!showSugestionFocus && e.key === 'ArrowDown') {
+            setShowSugestionFocus(true)
+        } else if(!showSugestionFocus && e.key === 'ArrowUp') {
+            setShowSugestionFocus(true)
+            setSugestionFocused(searchResult.length - 1)
+        } else {
+            switch (e.key) {
+                case 'ArrowDown': {
+                    if (sugestionFocused + 1 >= searchResult.length) {
+                        setSugestionFocused(0)
+                    } else setSugestionFocused(sugestionFocused + 1)
+                    break
+                }
+                case 'ArrowUp': {
+                    if (sugestionFocused === 0) {
+                        setSugestionFocused(searchResult.length - 1)
+                    }else setSugestionFocused(sugestionFocused - 1)
+                    break
+                }
+                case 'Enter': {
+                    setShowSugestionFocus(false)
+                    setSugestionFocused(0)
+                    onClickSugestion(sugestionFocused)
+                    break
+                }
+                default: return
+            }
+        }
+
         
     }
 
@@ -78,6 +123,7 @@ export default function SearchPeople() {
                     placeholder="Search for People"
                     onFocus={() => setSearchFocus(true)}
                     onBlur={onBlurHandler}
+                    onKeyDown={onKeyDownHandler}
                 />
                 {searchText.length > 0 &&
                     <div
@@ -101,7 +147,9 @@ export default function SearchPeople() {
                             searchResult.map( (people, i) => (
                                 <button
                                     key={people.name}
-                                    className="sugestion"
+                                    className={cn("sugestion", {// eslint-disable-next-line
+                                        ['sugestion__focus'] : showSugestionFocus && sugestionFocused === i
+                                    })}
                                     onClick={() => onClickSugestion(i)}
                                 >
                                     {people.name}
