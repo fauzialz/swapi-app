@@ -4,36 +4,27 @@ import { useParams } from 'react-router-dom'
 import { useFilmListContext } from '../../../context/filmList'
 import { ParamType } from '../../../models/param'
 import { People } from '../../../models/people'
+import TwoColumns, { TwoColumnsProps } from '../../templates/two-columns'
 import Pagination from '../pagination'
 import StarshipModal from '../starship-modal'
 import './styles.scss'
-
-interface PeopleDetailProps {
-    label: string
-    content: string | undefined
-}
-
-interface IterablePeopleDetail {
-    label: string
-    field: string | undefined
-}
 
 interface ModalState {
     show: boolean
     url: string
 }
 
-function getIterablePeopleDetail(people: Partial<People>): IterablePeopleDetail[] {
+function getIterablePeopleDetail(people: Partial<People>): TwoColumnsProps[] {
     if (!people) return []
     return ([
-        { label: 'Name', field: people.name },
-        { label: 'Height', field: people.height },
-        { label: 'Mass', field: people.mass },
-        { label: 'Hair Color', field: people.hair_color },
-        { label: 'Eye Color', field: people.eye_color },
-        { label: 'Birth Year', field: people.birth_year },
-        { label: 'Gender', field: people.gender },
-        { label: 'Homeworld', field: people.homeworld },
+        { label: 'Name', content: people.name },
+        { label: 'Height', content: people.height + ' cm'},
+        { label: 'Mass', content: people.mass + ' kg' },
+        { label: 'Hair Color', content: people.hair_color },
+        { label: 'Eye Color', content: people.eye_color },
+        { label: 'Birth Year', content: people.birth_year },
+        { label: 'Gender', content: people.gender },
+        { label: 'Homeworld', content: people.homeworld },
     ])
 }
 
@@ -53,23 +44,6 @@ const PeopleCardSkeleton = () => (
     </div>
 )
 
-function PeopleDetail({ label, content }: PeopleDetailProps ) {
-    return (
-        <div className="peopleDetail">
-            <div className="peopleDetail__label">
-                {label}
-            </div>
-            <div className="peopleDetail__content">
-                {content}
-                {
-                    label === 'Height'? ' cm':
-                    label === 'Mass'? ' kg': ''
-                }
-            </div>
-        </div>
-    )
-}
-
 export default function PeopleCard() {
     var param = useParams<ParamType>()
     const { filmList } = useContext(useFilmListContext)
@@ -85,7 +59,7 @@ export default function PeopleCard() {
             setLoading(true)
 
             if (source.current) {
-                source.current.cancel('Change page...')
+                source.current.cancel('Suddenly change page, prev fetch canceled!')
             }
         }
         fetchPeopleData() // eslint-disable-next-line
@@ -101,10 +75,9 @@ export default function PeopleCard() {
                 cancelToken: source.current.token
             })
             setPeople({...res.data})
-        } catch (err) {
-            console.error(err?.response?.message || err)
-        } finally {
             setLoading(false)
+        } catch (err) {
+            console.error(err?.response?.message || err?.message || err)
         }
     }
 
@@ -121,10 +94,10 @@ export default function PeopleCard() {
                         <div className="peopleCard__detail">
 
                             {getIterablePeopleDetail(people).map( detail => (
-                                <PeopleDetail
+                                <TwoColumns
                                     key={detail.label}
                                     label={detail.label}
-                                    content={detail.field}
+                                    content={detail.content}
                                 />
                             ))}
 

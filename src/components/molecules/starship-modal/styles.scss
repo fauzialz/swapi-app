@@ -1,4 +1,79 @@
 .starshipModal {
-    padding: 40px 50px;
-    width: 800px;
+    padding: 40px 60px;
+    width: 700px;
+
+    &__title {
+        margin-top: 0;
+        margin-bottom: 40px;
+    }
+
+    &__detail {
+        margin-bottom: 20px;
+    }
+
+    &__skeleton {
+        position: relative;
+        width: fit-content;
+        &__title {
+            width: 200px;
+            height: 32px;
+            border-radius: 4px;
+            margin-bottom: 40px;
+            background-color: #ebebeb;
+        }
+        &__detail {
+            margin-bottom: 20px;
+            &__grid {
+                display: grid;
+                grid-template-columns: 230px 1fr;
+                margin-bottom: 10px;
+                &__content, &__label {
+                    height: 19px;
+                    border-radius: 4px;
+                    background-color: #ebebeb;
+                }
+                &__label {
+                    width: 100px;
+                }
+                &__content {
+                    width: 200px;
+                }
+            }
+        }
+        &__ship {
+            height: 38px;
+            width: 116px;
+            border-radius: 6px;
+            background-color: #ebebeb;
+            margin-bottom: 20px;
+        }
+    }
+}
+
+#Slabel {
+    &__0 { width: 50px;}
+    &__1 { width: 58px;}
+    &__2 { width: 110px;}
+    &__3 { width: 50px;}
+    &__4 { width: 70px;}
+    &__5 { width: 90px;}
+    &__6 { width: 130px;}
+    &__7 { width: 170px;}
+    &__8 { width: 140px;}
+    &__9 { width: 162px;}
+    &__10 { width: 122px;}
+}
+#Scontent {
+    &__0 { width: 130px;}
+    &__1 { width: 260px;}
+    &__2 { width: 190px;}
+    &__3 { width: 170px;}
+    &__4 { width: 70px;}
+    &__5 { width: 90px;}
+    &__6 { width: 74px;}
+    &__7 { width: 50px;}
+    &__8 { width: 30px;}
+    &__9 { width: 110px;}
+    &__10 { width: 50px;}
+    &__11 { width: 60px;}
 }

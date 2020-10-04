@@ -1,0 +1,16 @@
+.twoColumns {
+    display: grid;
+    grid-template-columns: 160px 1fr;
+    margin-bottom: 10px;
+    font-size: 14px;
+
+    &__label {
+        color: #767676;
+    }
+    
+    &__content {
+        width: 100%;
+        overflow: auto;
+        word-wrap: break-word;
+    }
+}

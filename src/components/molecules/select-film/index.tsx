@@ -35,7 +35,7 @@ export default function SelectFilm() {
             var filmsTemp: Film[] = [...res.data.results].sort( (a, b) => a.episode_id - b.episode_id)
             setFilmList(filmsTemp.sort( (a, b) => a.episode_id - b.episode_id))
         } catch (err) {
-            console.error(err?.response?.message || err)
+            console.error(err?.response?.message || err?.message || err)
         }
     }
 
