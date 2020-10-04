@@ -34,6 +34,7 @@ function getIterablePeopleDetail(people: Partial<People>): TwoColumnsProps[] {
     ])
 }
 
+/* PEOPLE CARD SKELETON */
 const PeopleCardSkeleton = () => (
     <div className="peopleCard__skeleton">
         <div className="peopleCard__skeleton__title" />
@@ -109,7 +110,7 @@ export default function PeopleCard() {
         }
     }
 
-    /* FETCH HOMEWORDL DATA */
+    /* FETCH HOMEWORLD DATA */
     const fetchHomeworld = async (people: People) => {
         try {
             sourceHomeworld.current = Axios.CancelToken.source()

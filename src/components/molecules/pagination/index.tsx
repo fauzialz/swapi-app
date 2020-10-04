@@ -12,9 +12,12 @@ interface PaginationNavProps {
     onClick: Function
 }
 
+/* PAGINATION NAVIGATOR (FIST BUTTON< PREV BUTTON, NEXT BUTTON, LAST BUTTON) */
 function PaginationNav({ children, pIndex, lastPIndex, onClick }: PaginationNavProps) {
     return (
         <div className="paginationNav">
+
+            {/* FIRST BUTTON */}
             <button
                 className="paginationNav__nav"
                 disabled={pIndex === 0}
@@ -22,6 +25,8 @@ function PaginationNav({ children, pIndex, lastPIndex, onClick }: PaginationNavP
             >
                 {'<< First'}
             </button>
+
+            {/* PREV BUTTON */}
             <button
                 className="paginationNav__nav"
                 disabled={pIndex === 0}
@@ -30,8 +35,10 @@ function PaginationNav({ children, pIndex, lastPIndex, onClick }: PaginationNavP
                 {'< Previous'}
             </button>
 
+            {/* NUMBER BUTTONS */}
             {children}
 
+            {/* NEXT BUTTON */}
             <button
                 className="paginationNav__nav"
                 disabled={pIndex === lastPIndex}
@@ -39,6 +46,8 @@ function PaginationNav({ children, pIndex, lastPIndex, onClick }: PaginationNavP
             >
                 {'Next >'}
             </button>
+
+            {/* LAST BUTTON */}
             <button
                 className="paginationNav__nav"
                 disabled={pIndex === lastPIndex}
@@ -55,9 +64,11 @@ export default function Pagination() {
     const { episodeIndex, peopleIndex } = useParams<ParamType>()
     const { filmList } = useContext(useFilmListContext)
 
+    /* INDEXT TO INTEGER | NUMBER */
     const eIndex = parseInt(episodeIndex)
     const pIndex = parseInt(peopleIndex)
 
+    /* CALCULATE PAGINATION NUMBER BUTTONS BOUNDERY */
     const lastPIndex = filmList[eIndex]?.characters.length - 1 || 0
     const leftBoundery = pIndex < 5? 0:
         pIndex > (lastPIndex - 5)? (lastPIndex - 10): 
@@ -77,6 +88,7 @@ export default function Pagination() {
                 lastPIndex={lastPIndex}
                 onClick={onClickHandler}
             >
+                {/* RENDER PAGINATION NUMBER BUTTON */}
                 {filmList[parseInt(episodeIndex)]?.characters.map( (_, i) => {
                     if (i < leftBoundery || i > rightBoundery) return 
                     return (

@@ -10,6 +10,7 @@ import './styles.scss'
 export default function PeoplePage() {
     const param = useParams<ParamType>()
 
+    /* REDURECT TO MAIN PAGE IF PARAM IS NOT VALID */
     if (
         isNaN(parseInt(param.episodeIndex)) ||
         isNaN(parseInt(param.peopleIndex)) ||

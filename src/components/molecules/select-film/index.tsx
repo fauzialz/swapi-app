@@ -17,6 +17,7 @@ export default function SelectFilm() {
     useEffect(() => {
         fetchFilmList()
 
+        /* CANCEL FETCHING ON COMPONENT UNMOUNT */
         return () => {
             if(source.current) {
                 source.current.cancel('Component unmounted')
@@ -24,6 +25,7 @@ export default function SelectFilm() {
         }// eslint-disable-next-line 
     }, [])
 
+    /* FETCH FILM LIST, SORT IT, AND SAVE IT TO CONTEXT */
     const fetchFilmList = async () => {
         try {
             source.current = Axios.CancelToken.source()
@@ -39,6 +41,7 @@ export default function SelectFilm() {
         }
     }
 
+    /* ON SELECT CHANGE VALUE */
     const onChangeSelect = (e: ChangeEvent<HTMLSelectElement>) => {
         if (parseInt(e.target.value) === -1) {
             history.push(`/`)

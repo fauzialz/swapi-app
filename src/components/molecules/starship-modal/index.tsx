@@ -83,6 +83,7 @@ export default function StarshipModal({ url, onClose }: StarshipModalProps) {
             <div className="starshipModal">
                     
                 {
+                    /* RENDER SKELETON ON LOADING */
                     loading ?
                     <StarshipModalSkeleton />:
 

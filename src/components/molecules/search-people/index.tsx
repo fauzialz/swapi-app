@@ -62,6 +62,8 @@ export default function SearchPeople() {
 
     /* ON SUGSTION CLICKED */
     const onClickSugestion = (i: number) => {
+        setShowSugestionFocus(false)
+        setSugestionFocused(0)
         setSearchText('')
         setSearchFocus(false)
         constructRoute(searchResult[i])
@@ -92,8 +94,6 @@ export default function SearchPeople() {
                     break
                 }
                 case 'Enter': {
-                    setShowSugestionFocus(false)
-                    setSugestionFocused(0)
                     onClickSugestion(sugestionFocused)
                     break
                 }
