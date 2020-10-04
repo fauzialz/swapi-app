@@ -51,6 +51,7 @@ export default function StarshipModal({ url, onClose }: StarshipModalProps) {
         if (url === '') return
         fetchStarship()
         
+        /* CANCEL FETCH DATA WHEN COMPONENT UNMOUNT */
         return () => {
             if(fetch.current) {
                 fetch.current.cancel('Suddenly close modal, fetching data canceled!')
@@ -59,8 +60,10 @@ export default function StarshipModal({ url, onClose }: StarshipModalProps) {
         // eslint-disable-next-line
     }, [url])
 
+    /* FETCH STARSHIP DATA */
     const fetchStarship = async () => {
         !loading && setLoading(true)
+
         try {
             fetch.current = Axios.CancelToken.source()
             const res = await Axios.get(url, {

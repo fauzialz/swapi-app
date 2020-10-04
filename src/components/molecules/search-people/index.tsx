@@ -30,7 +30,6 @@ export default function SearchPeople() {
         setLoading(true)
         try {
             var res = await Axios.get(ENDPOINT.searchPeople(text))
-            console.log(res.data.results)
             setSearchResult([...res.data.results])
         } catch (err) {
             console.error(err?.response?.message || err)
@@ -94,7 +93,7 @@ export default function SearchPeople() {
 
                         /* WHEN NO RESULT FROM SERVER */
                         searchResult.length === 0?
-                            <div className={cn("sugestion", "sugestion__noResult")}>
+                            <div className="sugestion sugestion__noResult">
                                 No Result!
                             </div>:
 

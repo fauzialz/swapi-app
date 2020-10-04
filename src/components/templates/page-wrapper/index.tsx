@@ -7,7 +7,7 @@ export default function PageWrapper(props: { children: ReactNode}) {
         <div className="pageWrapper">
             <Centering>
                 <h1 className="pageWrapper__title">
-                    SWAPI APP
+                    STAR WARS CHARACTERS INFO
                 </h1>
                 {props.children}
             </Centering>

@@ -8,7 +8,10 @@ export default function Router() {
         <BrowserRouter>
             <Switch>
                 <Route exact path="/" component={MainPage} />
-                <Route path="/:episodeIndex/:peopleIndex" component={PeoplePage} />
+                <Route exact path="/:episodeIndex/:peopleIndex" component={PeoplePage} />
+                <Route>
+                    <div>404</div>
+                </Route>
             </Switch>
         </BrowserRouter>
     )

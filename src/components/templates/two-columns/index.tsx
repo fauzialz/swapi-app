@@ -1,9 +1,9 @@
-import React from 'react'
+import React, { ReactNode } from 'react'
 import './styles.scss'
 
 export interface TwoColumnsProps {
     label: string
-    content: string | undefined
+    content: string | ReactNode | undefined
     leftWidth?: string
 }
 
